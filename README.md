@@ -13,6 +13,8 @@ Various models were trained to predict different health concerns/diseases. The d
 
 After evaluating the heart prediction models by using the "Heart Disease Dataset" from Kaggle, one was chosen and pickled so it can be used in another app/api
 
+Doing the same with the Diabates Model as well
+
 ## Flask API
 work in progress, so far set up a basic idea of how it might look and use the created models
 
