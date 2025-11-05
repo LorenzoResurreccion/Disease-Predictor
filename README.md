@@ -9,11 +9,11 @@ This project will have multiple components:
 4. React.js front-end
 
 ## Data
-The data sets were obtained from kaggle. 
-[Heart Disease Dataset](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset/data)
-[Diabetes Dataset](https://www.kaggle.com/datasets/prosperchuks/health-dataset/data)
-[Chronic Kidney Disease Dataset](https://www.kaggle.com/datasets/abhia1999/chronic-kidney-disease?select=new_model.csv)
-[Skin Disease Dataset](https://www.kaggle.com/datasets/pacificrm/skindiseasedataset/data)
+The data sets were obtained from kaggle: 
+-[Heart Disease Dataset](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset/data)
+-[Diabetes Dataset](https://www.kaggle.com/datasets/prosperchuks/health-dataset/data)
+-[Chronic Kidney Disease Dataset](https://www.kaggle.com/datasets/abhia1999/chronic-kidney-disease?select=new_model.csv)
+-[Skin Disease Dataset](https://www.kaggle.com/datasets/pacificrm/skindiseasedataset/data)
 
 
 ## ML Models
