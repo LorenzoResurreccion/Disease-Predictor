@@ -9,13 +9,16 @@ app = Flask(__name__)
 with open('../ML_Models/heart_model.pkl', 'rb') as f:
     heart_model = pickle.load(f)
 
-@app.route('/predict/heart', methods=['POST'])
+with open('../ML_Models/diabetes_model.pkl', 'rb') as f:
+    diabetes_model = pickle.load(f)
+
+@app.route('/predict/diabetes', methods=['POST'])
 def predict():
     data = request.get_json(force=True)
     # Assuming input data is a dictionary that can be converted to a DataFrame
     input_df = pd.DataFrame([data])
-    prediction = heart_model.predict(input_df)
-    probability = heart_model.predict_proba(input_df)
+    prediction = diabetes_model.predict(input_df)
+    probability = diabetes_model.predict_proba(input_df)
     return jsonify({'prediction': prediction.tolist(), 'probability': probability.tolist()})
 
 if __name__ == '__main__':
