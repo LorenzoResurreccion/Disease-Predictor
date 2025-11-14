@@ -7,12 +7,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app) 
 
-# list necessary features for for quick check and fill
+# list necessary features for for quick check and fill (median/mean/mode can be used)
+# maybe implement fill using user's health history and use general fill val if still missing
 features = {'Heart':{},
             'Diabetes':{},
             'CKD':{}}
 
-# get paths
+# Path details
 ML_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ML_Models')) 
 Model_Files = {'Heart': 'heart_model.pkl', 
             'Diabetes':'diabetes_model.pkl',
@@ -67,7 +68,7 @@ Currently Supports: Skin
 disease: specific disease being predicted
 data: json provided in request
 
-returns: risk of disease as float, else error if No prediction model is available for disease
+returns: disease classification/confidence, else error if No prediction model is available for disease
 """
 def image_pred(disease, data):
     model = Models[disease]
