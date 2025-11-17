@@ -9,12 +9,13 @@ CORS(app)
 
 # list necessary features for for quick check and fill (median/mean/mode can be used)
 # maybe implement fill using user's health history and use general fill val if still missing
-features = {'Heart':['age', 'sex', 'cp', 'trestbps',  'chol', 'fbs', 'restecg',
+Features = {'Heart':['age', 'sex', 'cp', 'trestbps',  'chol', 'fbs', 'restecg',
                     'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'],
             'Diabetes':['Age, Sex, HighChol, CholCheck, BMI, Smoker,  '],
             'CKD':[]}
 
-fill_vals = {}
+Fill_vals = {'age': 40, 'sex': 1, 'cp': 0, 'trestbps':60,  'chol':90, 'fbs':0, 'restecg':0,
+                    'thalach':91, 'exang':0, 'oldpeak':0, 'slope':0, 'ca':0, 'thal':1}
 
 # Path details
 ML_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ML_Models')) 
@@ -30,9 +31,12 @@ def load_models():
         
         #check if model exists, else assign None
         try:
-            Models[label] = joblib.load(path)
+            model = joblib.load(path)
+            Models[label] = model
+            print(f'{label} model loaded')
         except Exception as e:
             Models[label] = None
+            print(f'{label} model not found')
 
 load_models()
 
@@ -48,9 +52,10 @@ returns: risk of disease as float, else error if No prediction model is availabl
 """
 def feature_pred(diseases, data):
     Results = []
-
+    
     # iterate through models
     for disease in diseases: 
+       
         try:
             #check model exists
             model = Models[disease]  
@@ -58,16 +63,19 @@ def feature_pred(diseases, data):
                 #model exists but is down
                 Results.append( {f'{disease}': "Prediction Model Temporarily Unavailable"})
     
+            print('model selected')
             #check features and fill
-            needed_features = features[disease]
-            for feature, fill_val in needed_features.items():
+            needed_features = Features[disease]
+            for feature in needed_features:
                 if feature not in data or data[feature] is None:
-                    data[feature] = fill_val
+                    data[feature] = Fill_vals[feature]
+            print('features checked')
             
             #predict
             df = pd.DataFrame([data])
             X = df[needed_features]
             risk = model.predict_proba(X)[:,1][0]
+            print('prediction made')
 
             #append results
             Results.append({f'{disease}': float(risk)})
@@ -104,7 +112,6 @@ def prediction(type):
     diseases = req.get('diseases')
     data = req.get('data')
 
-
     #call method based on model_name in path
     match type:
         case 'feature':
@@ -128,7 +135,7 @@ def models():
     Model_Files = data.get('models')
     load_models()
 
-    return "Models Updated", 200
+    return jsonify(Model_Files)
 
 
 '''
@@ -158,6 +165,8 @@ def features():
     features = data.get('features')
 
     return "Features updated", 200
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
