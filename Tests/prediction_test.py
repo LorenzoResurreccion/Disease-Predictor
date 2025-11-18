@@ -8,7 +8,7 @@ def test_full_heart_pred(client):
                 "restecg":0, "thalach":183, "exang":0, "oldpeak": 0, "slope":0, "ca":0, "thal":1}
     }
 
-    response = client.post('prediction/features', json=full_data)
+    response = client.post('prediction/feature', json=full_data)
 
     #Assert the response
     assert response.status_code == 200
@@ -16,8 +16,8 @@ def test_full_heart_pred(client):
 
     # decode the JSON response to check its contents
     response_json = response.get_json()
-    assert 'Heart' in response_json
-    val = response_json['Heart']
+    assert 'Heart' in response_json[0]
+    val = response_json[0]['Heart']
     assert isinstance(val, float)
 
 
@@ -29,7 +29,7 @@ def test_missing_heart_pred(client):
                 "restecg":0, "thalach":183, "exang":0, "oldpeak": 0}
     }
 
-    response = client.post('prediction/features', json=partial_data)
+    response = client.post('prediction/feature', json=partial_data)
 
     #Assert the response
     assert response.status_code == 200
@@ -37,8 +37,8 @@ def test_missing_heart_pred(client):
 
     # decode the JSON response to check its contents
     response_json = response.get_json()
-    assert 'Heart' in response_json
-    val = response_json['Heart']
+    assert 'Heart' in response_json[0]
+    val = response_json[0]['Heart']
     assert isinstance(val, float)
 
 
@@ -49,7 +49,7 @@ def test_half_heart_pred(client):
         "data": {"age": 22, "sex":1,"cp":0, "trestbps": 120,  "chol":180, "fbs":0}
     }
 
-    response = client.post('prediction/features', json=half_data)
+    response = client.post('prediction/feature', json=half_data)
 
     #Assert the response
     assert response.status_code == 200
@@ -57,7 +57,7 @@ def test_half_heart_pred(client):
 
     # decode the JSON response to check its contents
     response_json = response.get_json()
-    assert 'Heart' in response_json
-    assert response_json['Heart'] == 'No Existing Model'
+    assert 'Heart' in response_json[0]
+    assert response_json[0]['Heart'] == 'Not enough features'
 
 
