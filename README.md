@@ -10,6 +10,10 @@ This project will have multiple components:
 
 ![Example Architecture ](/Images/architecture.png)
 This is an example of what the architecture could look like. As I continue to develop the project it will likely change.
+1. Auth and associated database would likely be an OAuth provider instead of manually creating and running authentication service
+2. Orange Cylinders represent data stores (database, s3, etc.)
+3. Purple hexagons represent programs that alter/update data (maybe like a lambda function that is envoked on a schedule to periodically update the data/service)
+4. Green boxes represent microservices accessed using RESTful API endpoints
 
 ## Data
 The data sets were obtained from kaggle: 
