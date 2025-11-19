@@ -33,6 +33,17 @@ Suppsede to work by taking the needed data, making a prediction, and returning t
 4. If no model is avaialble returns '503', else data is prepped then used for prediction 
 5. returns classification for images, probabiliy of having disease for features
 
+## Update Functions
+Work in Progress.
+
+Update functions are programs that will run to calculate new data that the Prediction API will use,so that altering Prediction API won't require stopping and re-running for every change. 
+
+Since they are seperate programs, they can be modified to run on a set schedule too update the models and API
+
+1. train_models will train new ML models and notify the API to reload the models, even allowing for addition of new models, and also notifies API what features each model expects (sincce new model could use a different set of features for prediction)
+2. update_fill_vals works similarly to update new calculated fill vals (like if you want to alter existing fill values or add new feature fill values)
+3. clean_data is a helper program that would parse data from a database and clean it so it can be used by train_models and update_fill_vals
+
 ## App API
 Will begin working on it after finished creating/testing the basic functions of the ML API
 Planned structure:
@@ -49,9 +60,7 @@ Will beginn working on it after finished creating/testing the basic functions of
 
 ## Possible Improvements
 1. Implement scheduled service that would take the new data entries and clean/parse them and add them into the CSVs for model training (like after 10000 new entries or every 2 weeks )
-2. Create python files specifically for model training, seperate from the notebooks used for analysis and initial model creation
-3. implement scheduled re-training of models (like once a month)
-4. implement Prediction api endpoint for reloading models after improved model is made available
+2. implement scheduled re-training of models (like once a month)
 
 
 
