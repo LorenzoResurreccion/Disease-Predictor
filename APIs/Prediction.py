@@ -10,14 +10,13 @@ def create_app():
     app = Flask(__name__)
     CORS(app) 
 
-
     # Path details
     ML_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ML_Models')) 
     
     #assign global dicts to use as initial start values/lists
-    Model_Files = Global_Model_Files
-    Features = Global_Features
-    Fill_vals = Global_Fill_Vals
+    Model_Files = Global_Model_Files        #dict of disease: disease_model.pkl
+    Features = Global_Features              #dict of disease: [needed_features]
+    Fill_vals = Global_Fill_Vals            #dict if feature: value
 
     # Load the models once when the application starts
     Models = {} 
@@ -124,49 +123,78 @@ def create_app():
                 return "No Matching Models", 400
             
     '''
-    Accepts list of models to update models list and reload the models
+    POST:
+        Accepts list of models to update models list and reload the models
+        
+        JSON should be in the structure:
+        {model_name_1 : file_name_1, model_name_2 : file_name_2, ...}
 
-    JSON should be in the structure:
-    {model_name_1 : file_name_1, model_name_2 : file_name_2, ...}
+        returns newly assigned Model_Files
 
-    returns 200 indicating models were successfuly loaded and list updated
+    GET: 
+        returns list of models (Model_Files.keys())
     '''
-    @app.route('/models', methods=['POST'])
+    @app.route('/models', methods=['GET','POST'])
     def models():
-        data = request.json
-        Model_Files = data.get('models')
-        load_models()
+        global Model_Files
+        if request.method == 'POST':
+            #update models list and reload models
+            Model_Files = request.get_json()
+            load_models()
 
-        return jsonify(Model_Files)
+            return jsonify(Model_Files)
+        if request.method == 'GET':
+            #return list of available models
+            return jsonify(Model_Files.keys())
+        
+        return 'Method Not Allowed', 400
 
 
     '''
-    Accepts list of fill values for disease risk based on features
+    POST:
+        Accepts list of fill values for disease risk based on features
 
-    JSON should be in the structure:
-    {feature_1 : val_1, feature_2 : val_2, ...}
+        JSON should be in the structure:
+        {feature_1 : val_1, feature_2 : val_2, ...}
 
-    returns 200 indicating fill values were successfuly updated
+        returns fill values to verify values are different
+    GET:
+        returns list dict of features:fill_vals
     '''
     @app.route('/fill_values',  methods=['POST'])
     def fill_values():
-        data = request.json
-        fill_vals = data.get('values')
+        global Fill_vals
+        if request.method == 'POST':
+            Fill_vals = request.get_json()
+            return jsonify(Fill_vals)
+        if request.method == 'GET':
+            return jsonify(Fill_vals)
 
-        return "Fill Values updated", 200
+        return 'Method Not Allowed', 400
+       
 
 
     '''
-    Accepts list of fill features for each model
+    POST:
+        Accepts list of fill features for each model
 
-    returns 200 indicating features were successfuly updated
+        returns features for verfcation they were updated
+    GET:
+        returns list of features by model
     '''
-    @app.route('/features',  methods=['POST'])
+    @app.route('/features',  methods=['GET','POST'])
     def features():
-        data = request.json
-        features = data.get('features')
+        global Features
+        if request.method == 'POST':
+            Features = request.get_json()
+            return jsonify(Features)
+        if request.method == 'GET':
+            return Features
 
-        return "Features updated", 200
+        return 'Method Not Allowed', 400
+    
+    
+    
     return app
 
 
