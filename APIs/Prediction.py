@@ -3,25 +3,21 @@ from flask import Flask, request, jsonify
 import pandas as pd # Assuming your model expects pandas DataFrames
 import joblib, os
 from flask_cors import CORS
+from ML_Models.globals import Global_Features, Global_Fill_Vals, Global_Model_Files 
+
+
 def create_app():
     app = Flask(__name__)
     CORS(app) 
 
-    # list necessary features for for quick check and fill (median/mean/mode can be used)
-    # maybe implement fill using user's health history and use general fill val if still missing
-    Features = {'Heart':['age', 'sex', 'cp', 'trestbps',  'chol', 'fbs', 'restecg',
-                        'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'],
-                'Diabetes':['Age, Sex, HighChol, CholCheck, BMI, Smoker,  '],
-                'CKD':[]}
-
-    Fill_vals = {'age': 40, 'sex': 1, 'cp': 0, 'trestbps':60,  'chol':90, 'fbs':0, 'restecg':0,
-                        'thalach':91, 'exang':0, 'oldpeak':0, 'slope':0, 'ca':0, 'thal':1}
 
     # Path details
     ML_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ML_Models')) 
-    Model_Files = {'Heart': 'heart_model.pkl', 
-                'Diabetes':'diabetes_model.pkl',
-                'CKD': 'ckd_model.pkl'}
+    
+    #assign global dicts to use as initial start values/lists
+    Model_Files = Global_Model_Files
+    Features = Global_Features
+    Fill_vals = Global_Fill_Vals
 
     # Load the models once when the application starts
     Models = {} 
