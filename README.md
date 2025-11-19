@@ -8,7 +8,7 @@ This project will have multiple components:
 3. Seperate Flask Back-end for main app functioning like retrieving/saving data, calling prediction API
 4. React.js for front-end interactions
 
-![Example Architecture ](/Images/example_architecture.png)
+![Example Architecture ](/Images/architecture.png)
 This is an example of what the architecture could look like. As I continue to develop the project it will likely change.
 
 ## Data
