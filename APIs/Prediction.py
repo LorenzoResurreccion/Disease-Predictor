@@ -1,11 +1,8 @@
 #setup actual api
 from flask import Flask, request, jsonify
 import pandas as pd # Assuming your model expects pandas DataFrames
-import joblib, os
+import joblib, os, json
 from flask_cors import CORS
-from ML_Models.globals import Global_Features, Global_Fill_Vals, Global_Model_Files 
-
-
 
 def create_app():
     app = Flask(__name__)
@@ -13,12 +10,23 @@ def create_app():
 
     # Path details
     ML_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ML_Models')) 
+    globals_file = os.path.join(ML_dir, 'globals.json')
     
     #assign global dicts to use as initial start values/lists
-    Model_Files = Global_Model_Files        #dict of disease: disease_model.pkl
-    Features = Global_Features              #dict of disease: [needed_features]
-    Fill_vals = Global_Fill_Vals            #dict if feature: value
+    Model_Files = None       #dict of disease: disease_model.pkl
+    Features =  None             #dict of disease: [needed_features]
+    Fill_vals = None           #dict if feature: value
 
+    def load_globals():
+        with open(globals_file,'r') as file:
+            data = json.load(file)
+            nonlocal Model_Files, Features, Fill_vals
+            Model_Files = data.get("Global_Model_Files")
+            Features = data.get("Global_Features")
+            Fill_vals = data.get("Global_Fill_Vals")
+    load_globals()
+
+    
     # Load the models once when the application starts and whenever method is called
     Models = {} 
     def load_models(): 
