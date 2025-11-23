@@ -61,3 +61,26 @@ def test_half_heart_pred(client):
     assert response_json[0]['Heart'] == 'Not enough features'
 
 
+def test_get_models(client):
+    response = client.get('models')
+
+    #Assert the response
+    assert response.status_code == 200
+    assert response.data
+    
+
+def test_get_features(client):
+    response = client.get('models')
+
+    #Assert the response
+    assert response.status_code == 200
+    assert response.data
+
+
+def test_get_fill_vals(client):
+    response = client.get('models')
+
+    #Assert the response
+    assert response.status_code == 200
+    assert response.data
+

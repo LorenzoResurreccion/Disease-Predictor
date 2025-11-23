@@ -6,6 +6,7 @@ from flask_cors import CORS
 from ML_Models.globals import Global_Features, Global_Fill_Vals, Global_Model_Files 
 
 
+
 def create_app():
     app = Flask(__name__)
     CORS(app) 
@@ -18,7 +19,7 @@ def create_app():
     Features = Global_Features              #dict of disease: [needed_features]
     Fill_vals = Global_Fill_Vals            #dict if feature: value
 
-    # Load the models once when the application starts
+    # Load the models once when the application starts and whenever method is called
     Models = {} 
     def load_models(): 
         for label, file in Model_Files.items():
@@ -121,7 +122,11 @@ def create_app():
                 return image_pred(diseases, data)
             case _:
                 return "No Matching Models", 400
-            
+
+    def retrieve_models_list():
+        return Model_Files.keys()
+
+
     '''
     POST:
         Accepts list of models to update models list and reload the models
@@ -129,14 +134,15 @@ def create_app():
         JSON should be in the structure:
         {model_name_1 : file_name_1, model_name_2 : file_name_2, ...}
 
-        returns newly assigned Model_Files
+        returns newly assigned Model_Files 
 
     GET: 
-        returns list of models (Model_Files.keys())
+        returns list of models 
     '''
     @app.route('/models', methods=['GET','POST'])
     def models():
-        global Model_Files
+        nonlocal Model_Files
+        
         if request.method == 'POST':
             #update models list and reload models
             Model_Files = request.get_json()
@@ -145,7 +151,8 @@ def create_app():
             return jsonify(Model_Files)
         if request.method == 'GET':
             #return list of available models
-            return jsonify(Model_Files.keys())
+            return jsonify(list(Model_Files.keys()))
+        
         
         return 'Method Not Allowed', 400
 
@@ -161,9 +168,9 @@ def create_app():
     GET:
         returns list dict of features:fill_vals
     '''
-    @app.route('/fill_values',  methods=['POST'])
+    @app.route('/fill_values',  methods=['GET', 'POST'])
     def fill_values():
-        global Fill_vals
+        nonlocal Fill_vals
         if request.method == 'POST':
             Fill_vals = request.get_json()
             return jsonify(Fill_vals)
@@ -184,7 +191,7 @@ def create_app():
     '''
     @app.route('/features',  methods=['GET','POST'])
     def features():
-        global Features
+        nonlocal Features
         if request.method == 'POST':
             Features = request.get_json()
             return jsonify(Features)
